@@ -1,10 +1,33 @@
 // src/context/CartContext.jsx
-import React, { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
 
-const CartContext = createContext();
+// Create the context
+const CartContext = createContext(undefined);
 
-export const CartProvider = ({ children }) => {
-  const [cartItems, setCartItems] = useState([]);
+// Custom hook for using cart context
+export function useCart() {
+  const context = useContext(CartContext);
+  if (context === undefined) {
+    throw new Error('useCart must be used within a CartProvider');
+  }
+  return context;
+}
+
+// Cart provider component
+export function CartProvider({ children }) {
+  // Initialize cart from localStorage if available
+  const [cartItems, setCartItems] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const savedCart = localStorage.getItem('cart');
+      return savedCart ? JSON.parse(savedCart) : [];
+    }
+    return [];
+  });
+
+  // Update localStorage whenever cart changes
+  useEffect(() => {
+    localStorage.setItem('cart', JSON.stringify(cartItems));
+  }, [cartItems]);
 
   const addToCart = (product) => {
     setCartItems(prevItems => {
@@ -35,17 +58,24 @@ export const CartProvider = ({ children }) => {
     );
   };
 
+  const getCartTotal = () => {
+    return cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
+  };
+
+  const value = {
+    cartItems,
+    addToCart,
+    removeFromCart,
+    updateQuantity,
+    getCartTotal
+  };
+
   return (
-    <CartContext.Provider value={{ cartItems, addToCart, removeFromCart, updateQuantity }}>
+    <CartContext.Provider value={value}>
       {children}
     </CartContext.Provider>
   );
-};
+}
 
-export const useCart = () => {
-  const context = useContext(CartContext);
-  if (!context) {
-    throw new Error('useCart must be used within a CartProvider');
-  }
-  return context;
-};
+// Re-export CartContext for any direct uses
+export { CartContext };
