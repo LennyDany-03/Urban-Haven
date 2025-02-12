@@ -1,6 +1,7 @@
 // src/App.jsx
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { ThemeProvider } from './context/ThemeContext';
 import { CartProvider } from './context/CartContext';
 import Home from './pages/Home';
 import FindProduct from './pages/FindProduct';
@@ -9,16 +10,18 @@ import ShoppingList from './pages/ShoppingList';
 
 function App() {
   return (
-    <CartProvider>
-      <Router>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/FindProduct" element={<FindProduct />} />
-          <Route path="/Cart" element={<Cart />} />
-          <Route path="/ShoppingList" element={<ShoppingList />} />
-        </Routes>
-      </Router>
-    </CartProvider>
+    <ThemeProvider>
+      <CartProvider>
+        <Router>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/FindProduct" element={<FindProduct />} />
+            <Route path="/Cart" element={<Cart />} />
+            <Route path="/ShoppingList" element={<ShoppingList />} />
+          </Routes>
+        </Router>
+      </CartProvider>
+    </ThemeProvider>
   );
 }
 

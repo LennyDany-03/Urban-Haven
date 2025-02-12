@@ -6,6 +6,20 @@ import Milk from '../assets/Milk.jpg';
 import Banana from '../assets/Banana.jpg';
 import Bread from '../assets/Bread.jpg';
 import Breast from '../assets/Breast.jpg';
+import Pasta from '../assets/Pasta.jpg';
+import TomatoSause from '../assets/Tomato.jpg'; 
+import Apple from '../assets/Apple.jpg';   
+import Buttor from '../assets/Butter.jpg'
+import Potato from '../assets/Potato.jpg'
+import Soda from '../assets/Soda.jpg'
+import Chesse from '../assets/Cheese.jpg'
+import Salmon from '../assets/Salmon.jpg'
+import Cereal from '../assets/Cereal.jpg'
+import Orange from '../assets/Orange.jpg'
+import Lech from '../assets/Lech.jpg'
+import Egg from '../assets/Egg.jpg'
+import Beef from '../assets/Beef.jpg'
+import Rice from '../assets/Rice.jpg'
 
 const ProductSearch = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -63,6 +77,133 @@ const ProductSearch = () => {
       stock: 12,
       image: Breast
     },
+    {
+        id: 5,
+        name: "Cheddar Cheese",
+        price: 5.99,
+        category: "dairy",
+        location: "Aisle 2",
+        stock: 15,
+        image: Chesse
+      },
+      {
+        id: 6,
+        name: "Orange Juice",
+        price: 4.79,
+        category: "beverages",
+        location: "Aisle 3",
+        stock: 10,
+        image: Orange
+      },
+      {
+        id: 7,
+        name: "Rice",
+        price: 6.50,
+        category: "grains",
+        location: "Aisle 5",
+        stock: 25,
+        image: Rice
+      },
+      {
+        id: 10,
+        name: "Salmon Fillet",
+        price: 12.99,
+        category: "seafood",
+        location: "Aisle 4",
+        stock: 8,
+        image: Salmon
+      },
+      {
+        id: 11,
+        name: "Apples",
+        price: 2.99,
+        category: "fruits",
+        location: "Aisle 7",
+        stock: 40,
+        image: Apple
+      },
+      {
+        id: 12,
+        name: "Ground Beef",
+        price: 9.99,
+        category: "meat",
+        location: "Aisle 4",
+        stock: 18,
+        image: Beef
+      },
+      {
+        id: 13,
+        name: "Lettuce",
+        price: 1.99,
+        category: "vegetables",
+        location: "Aisle 6",
+        stock: 22,
+        image: Lech
+      },
+      {
+        id: 14,
+        name: "Eggs (12-pack)",
+        price: 4.29,
+        category: "dairy",
+        location: "Aisle 2",
+        stock: 30,
+        image: Egg
+      },
+      {
+        id: 15,
+        name: "Pasta",
+        price: 2.49,
+        category: "grains",
+        location: "Aisle 5",
+        stock: 35,
+        image: Pasta
+      },
+      {
+        id: 16,
+        name: "Tomato Sauce",
+        price: 3.79,
+        category: "canned goods",
+        location: "Aisle 5",
+        stock: 20,
+        image: TomatoSause
+      },
+      {
+        id: 17,
+        name: "Butter",
+        price: 5.49,
+        category: "dairy",
+        location: "Aisle 2",
+        stock: 15,
+        image: Buttor
+      },
+      {
+        id: 18,
+        name: "Potatoes",
+        price: 3.99,
+        category: "vegetables",
+        location: "Aisle 6",
+        stock: 50,
+        image: Potato
+      },
+      {
+        id: 19,
+        name: "Cereal",
+        price: 4.99,
+        category: "breakfast",
+        location: "Aisle 3",
+        stock: 25,
+        image: Cereal
+      },
+      {
+        id: 20,
+        name: "Soda (2L)",
+        price: 1.99,
+        category: "beverages",
+        location: "Aisle 3",
+        stock: 40,
+        image: Soda
+     }
+    
   ];
 
   const categories = [
