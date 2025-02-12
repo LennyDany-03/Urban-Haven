@@ -1,0 +1,203 @@
+import React, { useState } from 'react';
+import { Search, ArrowLeft, Filter, ShoppingCart, Moon, Sun } from 'lucide-react';
+
+const ProductSearch = () => {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [darkMode, setDarkMode] = useState(false);
+
+  // Handle back navigation
+  const handleBack = () => {
+    window.location.href = '/';
+  };
+
+  // Updated product data with image placeholders
+  const products = [
+    { 
+      id: 1, 
+      name: 'Fresh Milk', 
+      price: 2.99, 
+      category: 'dairy', 
+      location: 'Aisle 1', 
+      stock: 15,
+      imageSize: { width: 200, height: 200 }
+    },
+    { 
+      id: 2, 
+      name: 'Whole Wheat Bread', 
+      price: 3.49, 
+      category: 'bakery', 
+      location: 'Aisle 2', 
+      stock: 8,
+      imageSize: { width: 200, height: 200 }
+    },
+    { 
+      id: 3, 
+      name: 'Organic Bananas', 
+      price: 1.99, 
+      category: 'produce', 
+      location: 'Aisle 3', 
+      stock: 25,
+      imageSize: { width: 200, height: 200 }
+    },
+    { 
+      id: 4, 
+      name: 'Chicken Breast', 
+      price: 8.99, 
+      category: 'meat', 
+      location: 'Aisle 4', 
+      stock: 12,
+      imageSize: { width: 200, height: 200 }
+    },
+  ];
+
+  const categories = [
+    { id: 'all', name: 'All' },
+    { id: 'dairy', name: 'Dairy' },
+    { id: 'bakery', name: 'Bakery' },
+    { id: 'produce', name: 'Produce' },
+    { id: 'meat', name: 'Meat' }
+  ];
+
+  const toggleDarkMode = () => {
+    setDarkMode(!darkMode);
+  };
+
+  const filteredProducts = products.filter(product => {
+    const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory;
+    return matchesSearch && matchesCategory;
+  });
+
+  // Handle search input change
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
+  return (
+    <div className={`min-h-screen ${darkMode ? 'bg-gray-900' : 'bg-gray-100'} p-4 sm:p-6 transition-colors duration-200`}>
+      {/* Header */}
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-4">
+          <button 
+            onClick={handleBack} 
+            className={`p-2 rounded-full ${
+              darkMode ? 'hover:bg-gray-800 text-white' : 'hover:bg-gray-200 text-gray-800'
+            } transition-colors duration-200`}
+            aria-label="Back to home"
+          >
+            <ArrowLeft size={24} />
+          </button>
+          <h1 className={`text-xl sm:text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-800'}`}>
+            Find Products
+          </h1>
+        </div>
+        <button
+          onClick={toggleDarkMode}
+          className={`p-2 rounded-lg ${
+            darkMode ? 'bg-gray-800 text-yellow-300' : 'bg-gray-200 text-gray-600'
+          } hover:bg-opacity-80 transition-colors duration-200`}
+          aria-label={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+        >
+          {darkMode ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+        </button>
+      </div>
+
+      {/* Search Bar */}
+      <div className="relative mb-6">
+        <div className="relative">
+          <Search 
+            className={`absolute left-4 top-1/2 transform -translate-y-1/2 ${
+              darkMode ? 'text-gray-400' : 'text-gray-500'
+            }`} 
+            size={20}
+          />
+          <input
+            type="text"
+            placeholder="Search for products..."
+            value={searchQuery}
+            onChange={handleSearchChange}
+            className={`w-full p-4 pl-12 rounded-lg border ${
+              darkMode 
+                ? 'bg-gray-800 border-gray-700 text-white placeholder-gray-400' 
+                : 'bg-white border-gray-300 text-gray-800 placeholder-gray-500'
+            } focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200`}
+          />
+        </div>
+      </div>
+
+      {/* Category Filter */}
+      <div className="flex gap-2 overflow-x-auto pb-4 mb-6 scrollbar-thin">
+        {categories.map(category => (
+          <button
+            key={category.id}
+            onClick={() => setSelectedCategory(category.id)}
+            className={`px-4 py-2 rounded-full whitespace-nowrap transition-colors duration-200 ${
+              selectedCategory === category.id
+                ? 'bg-blue-600 text-white'
+                : darkMode
+                  ? 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                  : 'bg-white text-gray-600 hover:bg-gray-100'
+            }`}
+          >
+            {category.name}
+          </button>
+        ))}
+      </div>
+
+      {/* Product List */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {filteredProducts.map(product => (
+          <div 
+            key={product.id} 
+            className={`${
+              darkMode ? 'bg-gray-800 text-white' : 'bg-white'
+            } p-4 rounded-lg shadow-md transition-colors duration-200`}
+          >
+            {/* Product Image */}
+            <div className="mb-4 rounded-lg overflow-hidden">
+              <img
+                src={`/api/placeholder/${product.imageSize.width}/${product.imageSize.height}`}
+                alt={product.name}
+                className="w-full h-48 object-cover rounded-lg"
+              />
+            </div>
+            <div className="flex justify-between items-start mb-2">
+              <div>
+                <h3 className="font-semibold text-lg">{product.name}</h3>
+                <p className={darkMode ? 'text-gray-400' : 'text-gray-600'}>
+                  Location: {product.location}
+                </p>
+              </div>
+              <span className="text-lg font-bold">${product.price}</span>
+            </div>
+            <div className="flex justify-between items-center mt-4">
+              <span className={`text-sm ${
+                product.stock > 10 
+                  ? 'text-green-500' 
+                  : 'text-orange-500'
+              }`}>
+                {product.stock} in stock
+              </span>
+              <button 
+                className="bg-blue-600 text-white px-3 sm:px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-blue-700 transition-colors duration-200"
+                aria-label="Add to cart"
+              >
+                <ShoppingCart size={16} />
+                <span className="hidden sm:inline">Add to Cart</span>
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {filteredProducts.length === 0 && (
+        <div className={`text-center ${darkMode ? 'text-gray-400' : 'text-gray-600'} mt-8`}>
+          No products found. Try adjusting your search.
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default ProductSearch;
