@@ -1,16 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Search, ArrowLeft, ShoppingCart, Moon, Sun } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
+import Milk from '../assets/Milk.jpg';
+import Banana from '../assets/Banana.jpg';
+import Bread from '../assets/Bread.jpg';
+import Breast from '../assets/Breast.jpg';
 
 const ProductSearch = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [darkMode, setDarkMode] = useState(false);
+  const [imageLoadError, setImageLoadError] = useState({});
   const navigate = useNavigate();
   const { addToCart, cartItems } = useCart();
 
-  // Updated product data with image placeholders
+  // Load dark mode from localStorage on component mount
+  useEffect(() => {
+    const savedDarkMode = localStorage.getItem('darkMode') === 'true';
+    setDarkMode(savedDarkMode);
+  }, []);
+
+  // Save dark mode preference to localStorage
+  useEffect(() => {
+    localStorage.setItem('darkMode', darkMode);
+  }, [darkMode]);
+
   const products = [
     { 
       id: 1, 
@@ -19,7 +34,7 @@ const ProductSearch = () => {
       category: 'dairy', 
       location: 'Aisle 1', 
       stock: 15,
-      imageSize: { width: 200, height: 200 }
+      image: Milk
     },
     { 
       id: 2, 
@@ -28,7 +43,7 @@ const ProductSearch = () => {
       category: 'bakery', 
       location: 'Aisle 2', 
       stock: 8,
-      imageSize: { width: 200, height: 200 }
+      image: Bread
     },
     { 
       id: 3, 
@@ -37,7 +52,7 @@ const ProductSearch = () => {
       category: 'produce', 
       location: 'Aisle 3', 
       stock: 25,
-      imageSize: { width: 200, height: 200 }
+      image: Banana
     },
     { 
       id: 4, 
@@ -46,7 +61,7 @@ const ProductSearch = () => {
       category: 'meat', 
       location: 'Aisle 4', 
       stock: 12,
-      imageSize: { width: 200, height: 200 }
+      image: Breast
     },
   ];
 
@@ -62,21 +77,29 @@ const ProductSearch = () => {
     setDarkMode(!darkMode);
   };
 
+  const handleImageError = (productId) => {
+    setImageLoadError(prev => ({
+      ...prev,
+      [productId]: true
+    }));
+  };
+
   const filteredProducts = products.filter(product => {
     const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
 
-  // Handle search input change
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
   };
 
-  // Handle adding product to cart with notification
   const handleAddToCart = (product) => {
-    addToCart(product);
-    // You could add a toast notification here
+    const cartProduct = {
+      ...product,
+      quantity: 1
+    };
+    addToCart(cartProduct);
   };
 
   return (
@@ -100,7 +123,7 @@ const ProductSearch = () => {
         <div className="flex items-center gap-4">
           {/* Cart Icon with Count */}
           <button 
-            onClick={() => navigate('/cart')}
+            onClick={() => navigate('/Cart')}
             className={`relative p-2 rounded-full ${
               darkMode ? 'hover:bg-gray-800 text-white' : 'hover:bg-gray-200 text-gray-800'
             } transition-colors duration-200`}
@@ -177,11 +200,13 @@ const ProductSearch = () => {
             } p-4 rounded-lg shadow-md transition-colors duration-200`}
           >
             {/* Product Image */}
-            <div className="mb-4 rounded-lg overflow-hidden">
+            <div className="mb-4 rounded-lg overflow-hidden bg-gray-100">
               <img
-                src={`/api/placeholder/${product.imageSize.width}/${product.imageSize.height}`}
+                src={imageLoadError[product.id] ? '/api/placeholder/200/200' : product.image}
                 alt={product.name}
-                className="w-full h-48 object-cover rounded-lg"
+                className="w-full h-48 object-cover rounded-lg transition-opacity duration-200"
+                onError={() => handleImageError(product.id)}
+                loading="lazy"
               />
             </div>
             <div className="flex justify-between items-start mb-2">
@@ -191,7 +216,7 @@ const ProductSearch = () => {
                   Location: {product.location}
                 </p>
               </div>
-              <span className="text-lg font-bold">${product.price}</span>
+              <span className="text-lg font-bold">${product.price.toFixed(2)}</span>
             </div>
             <div className="flex justify-between items-center mt-4">
               <span className={`text-sm ${
@@ -205,6 +230,7 @@ const ProductSearch = () => {
                 onClick={() => handleAddToCart(product)}
                 className="bg-blue-600 text-white px-3 sm:px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-blue-700 transition-colors duration-200"
                 aria-label="Add to cart"
+                disabled={product.stock === 0}
               >
                 <ShoppingCart size={16} />
                 <span className="hidden sm:inline">Add to Cart</span>
