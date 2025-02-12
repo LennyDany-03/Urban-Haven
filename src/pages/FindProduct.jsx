@@ -1,15 +1,14 @@
 import React, { useState } from 'react';
-import { Search, ArrowLeft, Filter, ShoppingCart, Moon, Sun } from 'lucide-react';
+import { Search, ArrowLeft, ShoppingCart, Moon, Sun } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { useCart } from '../context/CartContext';
 
 const ProductSearch = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [darkMode, setDarkMode] = useState(false);
-
-  // Handle back navigation
-  const handleBack = () => {
-    window.location.href = '/';
-  };
+  const navigate = useNavigate();
+  const { addToCart, cartItems } = useCart();
 
   // Updated product data with image placeholders
   const products = [
@@ -74,13 +73,19 @@ const ProductSearch = () => {
     setSearchQuery(e.target.value);
   };
 
+  // Handle adding product to cart with notification
+  const handleAddToCart = (product) => {
+    addToCart(product);
+    // You could add a toast notification here
+  };
+
   return (
     <div className={`min-h-screen ${darkMode ? 'bg-gray-900' : 'bg-gray-100'} p-4 sm:p-6 transition-colors duration-200`}>
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-4">
           <button 
-            onClick={handleBack} 
+            onClick={() => navigate('/')}
             className={`p-2 rounded-full ${
               darkMode ? 'hover:bg-gray-800 text-white' : 'hover:bg-gray-200 text-gray-800'
             } transition-colors duration-200`}
@@ -92,15 +97,32 @@ const ProductSearch = () => {
             Find Products
           </h1>
         </div>
-        <button
-          onClick={toggleDarkMode}
-          className={`p-2 rounded-lg ${
-            darkMode ? 'bg-gray-800 text-yellow-300' : 'bg-gray-200 text-gray-600'
-          } hover:bg-opacity-80 transition-colors duration-200`}
-          aria-label={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
-        >
-          {darkMode ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-        </button>
+        <div className="flex items-center gap-4">
+          {/* Cart Icon with Count */}
+          <button 
+            onClick={() => navigate('/cart')}
+            className={`relative p-2 rounded-full ${
+              darkMode ? 'hover:bg-gray-800 text-white' : 'hover:bg-gray-200 text-gray-800'
+            } transition-colors duration-200`}
+          >
+            <ShoppingCart size={24} />
+            {cartItems.length > 0 && (
+              <span className="absolute -top-1 -right-1 bg-blue-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                {cartItems.length}
+              </span>
+            )}
+          </button>
+          {/* Dark Mode Toggle */}
+          <button
+            onClick={toggleDarkMode}
+            className={`p-2 rounded-lg ${
+              darkMode ? 'bg-gray-800 text-yellow-300' : 'bg-gray-200 text-gray-600'
+            } hover:bg-opacity-80 transition-colors duration-200`}
+            aria-label={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+          >
+            {darkMode ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+          </button>
+        </div>
       </div>
 
       {/* Search Bar */}
@@ -180,6 +202,7 @@ const ProductSearch = () => {
                 {product.stock} in stock
               </span>
               <button 
+                onClick={() => handleAddToCart(product)}
                 className="bg-blue-600 text-white px-3 sm:px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-blue-700 transition-colors duration-200"
                 aria-label="Add to cart"
               >
